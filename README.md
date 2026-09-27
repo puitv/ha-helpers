@@ -4,6 +4,8 @@ Home Assistant packages, blueprints en dashboard-cards voor een installatie met 
 **Sigenergy** thuisbatterij (SigenStor), **evcc**, **Zonneplan** dynamische stroomprijzen
 en een elektrische auto.
 
+![Energie Cast dashboard](docs/images/energie-cast.png)
+
 | | |
 |---|---|
 | [`packages/sigen_energiestatus.yaml`](packages/sigen_energiestatus.yaml) | Eén leesbare status-sensor voor je Sigen-installatie, plus stroomrichting-sensoren zonder geflapper |
@@ -13,6 +15,10 @@ en een elektrische auto.
 ## Package: Sigen energiestatus
 
 Maakt `sensor.sigen_energiestatus` aan met één van deze statussen:
+
+<img src="docs/images/status-teruglevering.png" alt="Status: Teruglevering van overschot" width="380"> <img src="docs/images/status-energie-vasthouden.png" alt="Status: Energie vasthouden" width="380">
+
+*De status-card uit het dashboard ([`cards/energiestatus.yaml`](dashboards/energie-cast/cards/energiestatus.yaml)) krijgt per status een eigen kleur en icoon.*
 
 | Status | Betekenis |
 |---|---|
@@ -56,7 +62,13 @@ Optioneel kun je acties toevoegen, bijvoorbeeld een notificatie, met `{{ status 
 ## Dashboard: Energie Cast
 
 Een sections-view met thuisaccu, auto, net, PV-opwek, eigen verbruik, evcc-laadmodus,
-energiestatus en stroomprijzen (nu, volgend uur, laagste/hoogste vandaag en morgen, grafiek).
+energiestatus en stroomprijzen (nu, volgend uur, laagste/hoogste vandaag en morgen, grafiek),
+zie de screenshot bovenaan.
+
+De bovenste rij (thuisaccu, auto, net) en de PV-card wisselen automatisch van kleur en titel
+op basis van de toestand, bijvoorbeeld *Thuisaccu · Laden / Ontladen / Rust* en
+*Net · Afname / Teruglevering / Neutraal*. Het blok met de knoppen *Uit / PV / Snel* zet de
+evcc-laadmodus.
 
 ```
 dashboards/energie-cast/
