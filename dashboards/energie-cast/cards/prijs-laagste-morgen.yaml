@@ -1,0 +1,65 @@
+type: custom:button-card
+entity: sensor.zonneplan_current_electricity_tariff
+name: Laagste prijs morgen
+show_icon: false
+show_state: false
+custom_fields:
+  val: |
+    [[[ const f = entity.attributes.forecast || [];
+        const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() + 1);
+        const end = new Date(start); end.setDate(end.getDate() + 1);
+        const items = f
+          .map(e => ({ t: new Date(e.datetime), p: parseFloat(e.electricity_price) }))
+          .filter(e => !isNaN(e.t) && !isNaN(e.p) && e.t >= start && e.t < end);
+        if (!items.length) return '–';
+        const pick = items.reduce((a, b) => (b.p < a.p ? b : a));
+        return '€ ' + (pick.p / 10000000).toLocaleString('nl-NL', {minimumFractionDigits: 3, maximumFractionDigits: 3})
+          + '<span style="font-size:12px;opacity:.7"> /kWh</span>'; ]]]
+  sub: |
+    [[[ const f = entity.attributes.forecast || [];
+        const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() + 1);
+        const end = new Date(start); end.setDate(end.getDate() + 1);
+        const items = f
+          .map(e => ({ t: new Date(e.datetime), p: parseFloat(e.electricity_price) }))
+          .filter(e => !isNaN(e.t) && !isNaN(e.p) && e.t >= start && e.t < end);
+        if (!items.length) return 'Nog niet bekend';
+        const pick = items.reduce((a, b) => (b.p < a.p ? b : a));
+        return 'morgen om ' + pick.t.toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'}); ]]]
+styles:
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 12px 14px
+    - border-radius: 12px
+    - border: none
+    - color: white
+    - background: |
+        [[[ const f = entity.attributes.forecast || [];
+            const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() + 1);
+            const end = new Date(start); end.setDate(end.getDate() + 1);
+            const has = f.some(e => { const t = new Date(e.datetime); return t >= start && t < end; });
+            return has ? 'linear-gradient(135deg, rgb(23,86,58), rgb(46,157,98))'
+                       : 'linear-gradient(135deg, rgb(35,43,54), rgb(58,70,86))'; ]]]
+  grid:
+    - grid-template-areas: '"n" "val" "sub"'
+    - justify-items: start
+    - align-content: center
+    - row-gap: 2px
+  name:
+    - justify-self: start
+    - font-size: 13px
+    - font-weight: 500
+    - color: rgba(255,255,255,.85)
+  custom_fields:
+    val:
+      - justify-self: start
+      - font-size: 22px
+      - font-weight: 500
+    sub:
+      - justify-self: start
+      - font-size: 12px
+      - color: rgba(255,255,255,.85)
+      - white-space: nowrap
+grid_options:
+  columns: 6
+  rows: 1.5

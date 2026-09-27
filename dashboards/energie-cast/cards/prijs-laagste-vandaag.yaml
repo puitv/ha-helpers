@@ -1,0 +1,74 @@
+type: custom:button-card
+entity: sensor.zonneplan_cheapest_quarter_hour_today
+name: Laagste prijs vandaag
+show_icon: false
+show_state: false
+triggers_update: sensor.sigen_plant_grid_active_power
+custom_fields:
+  val: >
+    [[[ const tariff =
+    states['sensor.zonneplan_current_electricity_tariff'];
+        const f = (tariff && tariff.attributes.forecast) || [];
+        const start = new Date(); start.setHours(0, 0, 0, 0);
+        const end = new Date(start); end.setDate(end.getDate() + 1);
+        const items = f
+          .map(e => ({ t: new Date(e.datetime), p: parseFloat(e.electricity_price) }))
+          .filter(e => !isNaN(e.t) && !isNaN(e.p) && e.t >= start && e.t < end);
+        if (!items.length) return '–';
+        const pick = items.reduce((a, b) => (b.p < a.p ? b : a));
+        return '€ ' + (pick.p / 10000000).toLocaleString('nl-NL', {minimumFractionDigits: 3, maximumFractionDigits: 3})
+          + '<span style="font-size:12px;opacity:.7"> /kWh</span>'; ]]]
+  sub: >
+    [[[ const tariff =
+    states['sensor.zonneplan_current_electricity_tariff'];
+        const f = (tariff && tariff.attributes.forecast) || [];
+        const start = new Date(); start.setHours(0, 0, 0, 0);
+        const end = new Date(start); end.setDate(end.getDate() + 1);
+        const items = f
+          .map(e => ({ t: new Date(e.datetime), p: parseFloat(e.electricity_price) }))
+          .filter(e => !isNaN(e.t) && !isNaN(e.p) && e.t >= start && e.t < end)
+          .sort((a, b) => a.t - b.t);
+        if (!items.length) return '';
+        const best = items.reduce((a, b) => (b.p < a.p ? b : a));
+        const dur = items.length > 1 ? items[1].t - items[0].t : 3600000;
+        const now = new Date();
+        const hhmm = best.t.toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'});
+        if (now >= best.t && now < best.t.getTime() + dur) return '<b>Nu!</b>';
+        const diff = (best.t - now) / 60000;
+        if (diff > 0) {
+          const h = Math.floor(diff / 60), m = Math.round(diff % 60);
+          return 'om ' + hhmm + ' · over ' + (h ? h + 'u ' : '') + m + 'm';
+        }
+        return 'was om ' + hhmm; ]]]
+styles:
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 12px 14px
+    - border-radius: 12px
+    - border: none
+    - color: white
+    - background: linear-gradient(135deg, rgb(23,86,58), rgb(46,157,98))
+  grid:
+    - grid-template-areas: '"n" "val" "sub"'
+    - justify-items: start
+    - align-content: center
+    - row-gap: 2px
+  name:
+    - justify-self: start
+    - font-size: 13px
+    - font-weight: 500
+    - color: rgba(255,255,255,.85)
+  custom_fields:
+    val:
+      - justify-self: start
+      - font-size: 22px
+      - font-weight: 500
+    sub:
+      - justify-self: start
+      - font-size: 12px
+      - color: rgba(255,255,255,.85)
+      - white-space: nowrap
+grid_options:
+  columns: 6
+  rows: 1.5

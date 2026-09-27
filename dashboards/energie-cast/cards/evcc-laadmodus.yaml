@@ -1,0 +1,156 @@
+type: custom:button-card
+entity: select.evcc_laadpaal_mode
+show_name: false
+show_icon: false
+show_state: false
+tap_action:
+  action: none
+custom_fields:
+  knop1:
+    card:
+      type: custom:button-card
+      entity: select.evcc_laadpaal_mode
+      name: Uit
+      icon: mdi:power
+      show_state: false
+      layout: vertical
+      tap_action:
+        action: perform-action
+        perform_action: select.select_option
+        target:
+          entity_id: select.evcc_laadpaal_mode
+        data:
+          option: 'off'
+      styles:
+        card:
+          - background: none
+          - box-shadow: none
+          - border: none
+          - height: 80px
+          - color: >-
+              [[[ return entity.state === 'off' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        icon:
+          - width: 26px
+          - color: >-
+              [[[ return entity.state === 'off' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        name:
+          - font-size: 15px
+          - font-weight: 500
+  knop2:
+    card:
+      type: custom:button-card
+      entity: select.evcc_laadpaal_mode
+      name: PV
+      icon: mdi:solar-power-variant
+      show_state: false
+      layout: vertical
+      tap_action:
+        action: perform-action
+        perform_action: select.select_option
+        target:
+          entity_id: select.evcc_laadpaal_mode
+        data:
+          option: smart
+      styles:
+        card:
+          - background: none
+          - box-shadow: none
+          - border: none
+          - height: 80px
+          - color: >-
+              [[[ return entity.state === 'smart' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        icon:
+          - width: 26px
+          - color: >-
+              [[[ return entity.state === 'smart' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        name:
+          - font-size: 15px
+          - font-weight: 500
+  knop3:
+    card:
+      type: custom:button-card
+      entity: select.evcc_laadpaal_mode
+      name: Snel
+      icon: mdi:lightning-bolt
+      show_state: false
+      layout: vertical
+      tap_action:
+        action: perform-action
+        perform_action: select.select_option
+        target:
+          entity_id: select.evcc_laadpaal_mode
+        data:
+          option: now
+      styles:
+        card:
+          - background: none
+          - box-shadow: none
+          - border: none
+          - height: 80px
+          - color: >-
+              [[[ return entity.state === 'now' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        icon:
+          - width: 26px
+          - color: >-
+              [[[ return entity.state === 'now' ? 'white' :
+              'rgba(255,255,255,.6)'; ]]]
+        name:
+          - font-size: 15px
+          - font-weight: 500
+styles:
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 4px
+    - border-radius: 12px
+    - border: none
+    - position: relative
+    - overflow: hidden
+    - background: linear-gradient(135deg, rgb(35,43,54), rgb(58,70,86))
+  grid:
+    - grid-template-areas: '"title title title" "knop1 knop2 knop3"'
+    - grid-template-columns: 1fr 1fr 1fr
+    - column-gap: 0
+  custom_fields:
+    title:
+      - justify-self: start
+      - align-self: center
+      - padding: 6px 10px 0
+      - font-size: 14px
+      - font-weight: 500
+      - color: rgba(255,255,255,.9)
+    thumb:
+      - position: absolute
+      - top: 32px
+      - bottom: 4px
+      - width: calc((100% - 8px) / 3)
+      - border-radius: 10px
+      - z-index: 0
+      - transition: left .35s ease, background .35s ease
+      - left: |
+          [[[ const map = { off: 0, smart: 1, now: 2 };
+              const i = map[entity.state];
+              return 'calc(4px + (100% - 8px) * ' + (i === undefined ? 0 : i) + ' / 3)'; ]]]
+      - background: >
+          [[[ if (entity.state === 'smart') return
+          'linear-gradient(135deg, rgb(138,75,15),
+          rgb(217,150,43))';
+              if (entity.state === 'now') return 'linear-gradient(135deg, rgb(23,86,58), rgb(46,157,98))';
+              return 'linear-gradient(135deg, rgb(70,80,95), rgb(110,122,140))'; ]]]
+    knop1:
+      - z-index: 1
+      - position: relative
+    knop2:
+      - z-index: 1
+      - position: relative
+    knop3:
+      - z-index: 1
+      - position: relative
+grid_options:
+  columns: 8
+  rows: 1.5

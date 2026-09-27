@@ -1,0 +1,308 @@
+type: vertical-stack
+grid_options:
+  rows: 3
+  columns: 8
+cards:
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: binary_sensor.evcc_laadpaal_charging
+        state: 'on'
+    card:
+      type: custom:mini-graph-card
+      name: ID.4 · Laden
+      icon: mdi:car-electric
+      entities:
+        - entity: sensor.id_4_state_of_charge
+        - entity: sensor.id_4_target_state_of_charge
+          show_graph: false
+          show_state: true
+        - entity: sensor.id_4_estimated_remaining_driving_range
+          show_graph: false
+          show_state: true
+      hours_to_show: 24
+      points_per_hour: 2
+      lower_bound: 0
+      upper_bound: 100
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 170px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #17563a, #2e9d62);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; display: flex !important; align-items:
+          baseline !important; flex-wrap: nowrap !important;
+          line-height: 1.1 !important; }
+
+          .states--secondary { display: contents !important; }
+
+          .states .state { margin: 0 !important; padding: 0
+          !important; align-self: baseline !important; display: flex
+          !important; align-items: baseline !important; }
+
+          .states .state__value { font-size: 30px !important; }
+
+          .states .state__uom { font-size: 14px !important; opacity:
+          .8 !important; }
+
+          .states--secondary > .state:nth-child(1) { order: 1;
+          margin-left: 8px !important; }
+
+          .states--secondary > .state:nth-child(1)::before {
+          content: "/"; font-size: 20px; margin-right: 8px; opacity:
+          .6; }
+
+          .states--secondary > .state:nth-child(2) { order: 2;
+          margin-left: auto !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: binary_sensor.evcc_laadpaal_charging
+        state_not: 'on'
+      - condition: state
+        entity: binary_sensor.evcc_laadpaal_connected
+        state: 'on'
+    card:
+      type: custom:mini-graph-card
+      name: ID.4 · Verbonden
+      icon: mdi:car-electric
+      entities:
+        - entity: sensor.id_4_state_of_charge
+        - entity: sensor.id_4_target_state_of_charge
+          show_graph: false
+          show_state: true
+        - entity: sensor.id_4_estimated_remaining_driving_range
+          show_graph: false
+          show_state: true
+      hours_to_show: 24
+      points_per_hour: 2
+      lower_bound: 0
+      upper_bound: 100
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 180px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #1d4e7a, #3a86c4);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; display: flex !important; align-items:
+          baseline !important; flex-wrap: nowrap !important;
+          line-height: 1.1 !important; }
+
+          .states--secondary { display: contents !important; }
+
+          .states .state { margin: 0 !important; padding: 0
+          !important; align-self: baseline !important; display: flex
+          !important; align-items: baseline !important; }
+
+          .states .state__value { font-size: 30px !important; }
+
+          .states .state__uom { font-size: 14px !important; opacity:
+          .8 !important; }
+
+          .states--secondary > .state:nth-child(1) { order: 1;
+          margin-left: 8px !important; }
+
+          .states--secondary > .state:nth-child(1)::before {
+          content: "/"; font-size: 24px; margin-right: 8px; opacity:
+          .6; }
+
+          .states--secondary > .state:nth-child(2) { order: 2;
+          margin-left: auto !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: binary_sensor.evcc_laadpaal_charging
+        state_not: 'on'
+      - condition: state
+        entity: binary_sensor.evcc_laadpaal_connected
+        state_not: 'on'
+    card:
+      type: custom:mini-graph-card
+      name: ID.4 · Niet verbonden
+      icon: mdi:car-electric
+      entities:
+        - entity: sensor.id_4_state_of_charge
+        - entity: sensor.id_4_target_state_of_charge
+          show_graph: false
+          show_state: true
+        - entity: sensor.id_4_estimated_remaining_driving_range
+          show_graph: false
+          show_state: true
+      hours_to_show: 24
+      points_per_hour: 2
+      lower_bound: 0
+      upper_bound: 100
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 180px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #232b36, #3a4656);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; display: flex !important; align-items:
+          baseline !important; flex-wrap: nowrap !important;
+          line-height: 1.1 !important; }
+
+          .states--secondary { display: contents !important; }
+
+          .states .state { margin: 0 !important; padding: 0
+          !important; align-self: baseline !important; display: flex
+          !important; align-items: baseline !important; }
+
+          .states .state__value { font-size: 30px !important; }
+
+          .states .state__uom { font-size: 14px !important; opacity:
+          .8 !important; }
+
+          .states--secondary > .state:nth-child(1) { order: 1;
+          margin-left: 8px !important; }
+
+          .states--secondary > .state:nth-child(1)::before {
+          content: "/"; font-size: 24px; margin-right: 8px; opacity:
+          .6; }
+
+          .states--secondary > .state:nth-child(2) { order: 2;
+          margin-left: auto !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }

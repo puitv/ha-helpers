@@ -1,0 +1,96 @@
+# Sigen energiestatus
+#
+# Eén leesbare status-sensor voor een Sigenergy (SigenStor) installatie, bijv.
+# "Batterij verkoop", "Eigen verbruik (uit batterij)", "Energie vasthouden".
+#
+# Vereist: de Sigenergy integratie (sigen_plant_* entiteiten).
+# Installatie: zet dit bestand in /config/packages/ en zorg dat configuration.yaml bevat:
+#   homeassistant:
+#     packages: !include_dir_named packages
+
+template:
+  # Eigen stroomrichting-sensoren: de Sigen binary_sensors schakelen al bij 10 W,
+  # waardoor ze rond 0 kW (peak shaving / backup-limiet) continu flapperen.
+  # Hier 100 W drempel + 20 s vertraging zodat de status pas bij echte flow wisselt.
+  - binary_sensor:
+    - name: "Sigen net afname"
+      unique_id: sigen_flow_net_afname
+      state: "{{ states('sensor.sigen_plant_grid_active_power') | float(0) > 0.1 }}"
+      availability: "{{ has_value('sensor.sigen_plant_grid_active_power') }}"
+      delay_on: { seconds: 20 }
+      delay_off: { seconds: 20 }
+    - name: "Sigen net teruglevering"
+      unique_id: sigen_flow_net_teruglevering
+      state: "{{ states('sensor.sigen_plant_grid_active_power') | float(0) < -0.1 }}"
+      availability: "{{ has_value('sensor.sigen_plant_grid_active_power') }}"
+      delay_on: { seconds: 20 }
+      delay_off: { seconds: 20 }
+    - name: "Sigen batterij laden"
+      unique_id: sigen_flow_batterij_laden
+      state: "{{ states('sensor.sigen_plant_battery_power') | float(0) > 0.1 }}"
+      availability: "{{ has_value('sensor.sigen_plant_battery_power') }}"
+      delay_on: { seconds: 20 }
+      delay_off: { seconds: 20 }
+    - name: "Sigen batterij ontladen"
+      unique_id: sigen_flow_batterij_ontladen
+      state: "{{ states('sensor.sigen_plant_battery_power') | float(0) < -0.1 }}"
+      availability: "{{ has_value('sensor.sigen_plant_battery_power') }}"
+      delay_on: { seconds: 20 }
+      delay_off: { seconds: 20 }
+  - sensor:
+    - name: "Sigen energiestatus"
+      unique_id: sigen_energiestatus
+      state: >
+        {% set bs = ['binary_sensor.sigen_net_afname',
+             'binary_sensor.sigen_net_teruglevering',
+             'binary_sensor.sigen_batterij_laden',
+             'binary_sensor.sigen_batterij_ontladen'] %}
+
+        {% set vorige = this.state if this.state not in ['unknown', 'unavailable', none, ''] else 'Eigen verbruik (zon dekt huis)' %}
+        {% set onbeschikbaar = expand(bs) | selectattr('state', 'in', ['unavailable', 'unknown']) | list | count > 0 %}
+
+        {% set imp  = is_state(bs[0], 'on') %}
+        {% set exp  = is_state(bs[1], 'on') %}
+        {% set chg  = is_state(bs[2], 'on') %}
+        {% set dis  = is_state(bs[3], 'on') %}
+        {% set pv   = states('sensor.sigen_plant_pv_power') | float(0)
+                    + states('sensor.sigen_plant_third_party_pv_power') | float(0) %}
+        {% set load = states('sensor.sigen_plant_total_load_power') | float(0) %}
+        {% set batt = states('sensor.sigen_plant_battery_power') | float(0) | abs %}
+        {% set soc  = states('sensor.sigen_plant_battery_state_of_charge') | float(50) %}
+        {% set reserve = [states('number.sigen_plant_ess_backup_state_of_charge') | float(10),
+                          states('number.sigen_plant_ess_discharge_cut_off_state_of_charge') | float(10)] | max %}
+        {% set leeg = soc <= reserve + 1 %}
+        {% set surplus = pv - load %}
+        {% set drempel = 0.1 %}
+
+        {% if dis and exp and batt > (load - pv) + drempel %}
+          {% set nieuw = 'Batterij verkoop' %}
+        {% elif chg and imp and batt > surplus + drempel %}
+          {% set nieuw = 'Batterij inkoop' %}
+        {% elif exp %}
+          {% set nieuw = 'Teruglevering van overschot' %}
+        {% elif dis %}
+          {% set nieuw = 'Eigen verbruik (uit batterij)' %}
+        {% elif chg %}
+          {% set nieuw = 'Eigen verbruik (zon laadt batterij)' %}
+        {% elif imp %}
+          {% set nieuw = 'Batterij leeg' if leeg else 'Energie vasthouden' %}
+        {% elif leeg and pv < drempel %}
+          {% set nieuw = 'Batterij leeg' %}
+        {% else %}
+          {% set nieuw = 'Eigen verbruik (zon dekt huis)' %}
+        {% endif %}
+
+        {{ vorige if onbeschikbaar else nieuw }}
+      icon: >
+        {% set s = this.state | default('') %}
+        {% if s == 'Batterij verkoop' %} mdi:cash-plus
+        {% elif s == 'Batterij inkoop' %} mdi:cash-minus
+        {% elif s == 'Teruglevering van overschot' %} mdi:transmission-tower-export
+        {% elif s == 'Energie vasthouden' %} mdi:battery-lock
+        {% elif s == 'Batterij leeg' %} mdi:battery-alert-variant-outline
+        {% elif s == 'Eigen verbruik (uit batterij)' %} mdi:home-battery
+        {% elif s == 'Eigen verbruik (zon laadt batterij)' %} mdi:battery-charging-high
+        {% else %} mdi:home-lightning-bolt
+        {% endif %}

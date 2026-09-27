@@ -1,0 +1,67 @@
+type: custom:button-card
+entity: sensor.sigen_energiestatus
+name: Status
+show_icon: true
+show_name: true
+show_state: true
+variables:
+  kleuren:
+    Batterij verkoop: rgb(76,175,80)
+    Batterij inkoop: rgb(244,67,54)
+    Teruglevering van overschot: rgb(255,193,7)
+    Energie vasthouden: rgb(33,150,243)
+    Batterij leeg: rgb(158,158,158)
+    Eigen verbruik (uit batterij): rgb(0,188,212)
+    Eigen verbruik (zon laadt batterij): rgb(139,195,74)
+    Eigen verbruik (zon dekt huis): rgb(255,152,0)
+icon: |
+  [[[
+    const s = entity.state;
+    if (s === 'Batterij verkoop') return 'mdi:cash-plus';
+    if (s === 'Batterij inkoop') return 'mdi:cash-minus';
+    if (s === 'Teruglevering van overschot') return 'mdi:transmission-tower-export';
+    if (s === 'Energie vasthouden') return 'mdi:battery-lock';
+    if (s === 'Batterij leeg') return 'mdi:battery-alert-variant-outline';
+    if (s === 'Eigen verbruik (uit batterij)') return 'mdi:home-battery';
+    if (s === 'Eigen verbruik (zon laadt batterij)') return 'mdi:battery-charging-high';
+    return 'mdi:home-lightning-bolt';
+  ]]]
+styles:
+  grid:
+    - grid-template-areas: '"i n" "i s"'
+    - grid-template-columns: 44px 1fr
+    - grid-template-rows: min-content min-content
+    - column-gap: 12px
+    - align-content: center
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 12px 16px
+    - border-radius: 12px
+    - border: none
+    - color: white
+    - background: >
+        [[[ const k = variables.kleuren[entity.state] ||
+        'rgb(128,128,128)';
+            return 'linear-gradient(135deg, ' + k.replace('rgb', 'rgba').replace(')', ',.35)')
+                 + ', rgb(35,43,54) 70%)'; ]]]
+  icon:
+    - width: 36px
+    - color: '[[[ return variables.kleuren[entity.state] || ''white''; ]]]'
+  img_cell:
+    - justify-content: center
+  name:
+    - justify-self: start
+    - font-size: 12px
+    - color: rgba(255,255,255,.7)
+    - font-weight: 500
+  state:
+    - justify-self: start
+    - text-align: left
+    - font-size: 20px
+    - font-weight: 500
+    - white-space: normal
+    - color: '[[[ return variables.kleuren[entity.state] || ''white''; ]]]'
+grid_options:
+  columns: 8
+  rows: 1.5

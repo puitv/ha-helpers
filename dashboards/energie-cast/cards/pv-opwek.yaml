@@ -1,0 +1,337 @@
+type: vertical-stack
+grid_options:
+  columns: 8
+  rows: 2.5
+cards:
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sigen_plant_pv_power
+        above: 0.05
+    card:
+      type: custom:apexcharts-card
+      graph_span: 24h
+      span:
+        start: day
+      header:
+        show: true
+        title: PV · Opwek
+        show_states: true
+        colorize_states: false
+      now:
+        show: true
+        color: rgb(255,255,255)
+        label: Nu
+      yaxis:
+        - min: 0
+          decimals: 1
+          apex_config:
+            tickAmount: 4
+      series:
+        - entity: sensor.sigen_plant_pv_power
+          name: PV
+          type: area
+          stroke_width: 2
+          color: rgb(255,255,255)
+          opacity: 0.25
+          extend_to: now
+          show:
+            name_in_header: false
+          group_by:
+            func: avg
+            duration: 15min
+        - entity: sensor.evcc_forecast_solar
+          name: Verwachting
+          type: line
+          stroke_width: 2
+          color: rgb(255,243,196)
+          extend_to: false
+          show:
+            in_header: false
+          data_generator: >
+            const ts = entity.attributes.timeseries || {};
+
+            const values = ts.values || [];
+
+            const deltas = ts.deltas_in_minutes || [];
+
+            let t = new Date(ts.start_utc).getTime();
+
+            const pts = values.map((v, i) => {
+              const p = [t, v / 1000];
+              t += (deltas[i] || 15) * 60 * 1000;
+              return p;
+            });
+
+            return pts.filter(p => p[0] >= Date.now() - 30 * 60 *
+            1000);
+        - entity: sensor.evcc_forecast_solar
+          name: nog te gaan
+          unit: kWh
+          float_precision: 1
+          extend_to: false
+          show:
+            in_chart: false
+            in_header: after_now
+            name_in_header: true
+          data_generator: >
+            const ts = entity.attributes.timeseries || {};
+
+            const values = ts.values || [];
+
+            const deltas = ts.deltas_in_minutes || [];
+
+            const now = Date.now();
+
+            const endOfDay = new Date(); endOfDay.setHours(24, 0, 0,
+            0);
+
+            let t = new Date(ts.start_utc).getTime();
+
+            let sum = 0;
+
+            values.forEach((v, i) => {
+              const next = t + (deltas[i] || 15) * 60 * 1000;
+              const start = Math.max(t, now);
+              const end = Math.min(next, endOfDay.getTime());
+              if (end > start) sum += (v / 1000) * (end - start) / 3600000;
+              t = next;
+            });
+
+            return [[now + 60000, sum]];
+      apex_config:
+        chart:
+          height: 95
+          foreColor: rgba(255,255,255,.8)
+          toolbar:
+            show: false
+          zoom:
+            enabled: false
+        stroke:
+          dashArray:
+            - 0
+            - 5
+        grid:
+          borderColor: rgba(255,255,255,.15)
+          padding:
+            top: -20
+            left: 4
+            right: 10
+            bottom: 0
+          xaxis:
+            lines:
+              show: true
+        xaxis:
+          tickAmount: 6
+          labels:
+            format: HH:mm
+            style:
+              fontSize: 11px
+        legend:
+          show: false
+        tooltip:
+          theme: dark
+      card_mod:
+        style: |
+          ha-card {
+            height: 150px; box-sizing: border-box;
+            position: relative; overflow: hidden; border: none;
+            --primary-text-color: #fff;
+            --secondary-text-color: rgba(255,255,255,.85);
+            background: linear-gradient(135deg, #8a4b0f, #d9962b);
+          }
+          #header {
+            padding: 8px 14px 0 !important;
+            margin: 0 0 0px 0 !important;
+          }
+          #header__title {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+          }
+          #header__states {
+            margin: -2px 0 0 0 !important;
+            padding: 0 !important;
+          }
+          #header__states > div:first-child {
+            zoom: 1;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+          }
+          #header__states > div:last-child {
+            position: absolute !important;
+            top: 6px;
+            right: 14px;
+            margin: 0 !important;
+            padding: 0 !important;
+            text-align: right;
+            zoom: 1;
+            opacity: .9;
+          }
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sigen_plant_pv_power
+        below: 0.05
+    card:
+      type: custom:apexcharts-card
+      graph_span: 24h
+      span:
+        start: day
+      header:
+        show: true
+        title: PV · Geen opwek
+        show_states: true
+        colorize_states: false
+      now:
+        show: true
+        color: rgb(255,255,255)
+        label: Nu
+      yaxis:
+        - min: 0
+          decimals: 1
+          apex_config:
+            tickAmount: 4
+      series:
+        - entity: sensor.sigen_plant_pv_power
+          name: PV
+          type: area
+          stroke_width: 2
+          color: rgb(255,255,255)
+          opacity: 0.25
+          extend_to: now
+          show:
+            name_in_header: false
+          group_by:
+            func: avg
+            duration: 15min
+        - entity: sensor.evcc_forecast_solar
+          name: Verwachting
+          type: line
+          stroke_width: 2
+          color: rgb(255,243,196)
+          extend_to: false
+          show:
+            in_header: false
+          data_generator: >
+            const ts = entity.attributes.timeseries || {};
+
+            const values = ts.values || [];
+
+            const deltas = ts.deltas_in_minutes || [];
+
+            let t = new Date(ts.start_utc).getTime();
+
+            const pts = values.map((v, i) => {
+              const p = [t, v / 1000];
+              t += (deltas[i] || 15) * 60 * 1000;
+              return p;
+            });
+
+            return pts.filter(p => p[0] >= Date.now() - 30 * 60 *
+            1000);
+        - entity: sensor.evcc_forecast_solar
+          name: nog te gaan
+          unit: kWh
+          float_precision: 1
+          extend_to: false
+          show:
+            in_chart: false
+            in_header: after_now
+            name_in_header: true
+          data_generator: >
+            const ts = entity.attributes.timeseries || {};
+
+            const values = ts.values || [];
+
+            const deltas = ts.deltas_in_minutes || [];
+
+            const now = Date.now();
+
+            const endOfDay = new Date(); endOfDay.setHours(24, 0, 0,
+            0);
+
+            let t = new Date(ts.start_utc).getTime();
+
+            let sum = 0;
+
+            values.forEach((v, i) => {
+              const next = t + (deltas[i] || 15) * 60 * 1000;
+              const start = Math.max(t, now);
+              const end = Math.min(next, endOfDay.getTime());
+              if (end > start) sum += (v / 1000) * (end - start) / 3600000;
+              t = next;
+            });
+
+            return [[now + 60000, sum]];
+      apex_config:
+        chart:
+          height: 95
+          foreColor: rgba(255,255,255,.8)
+          toolbar:
+            show: false
+          zoom:
+            enabled: false
+        stroke:
+          dashArray:
+            - 0
+            - 5
+        grid:
+          borderColor: rgba(255,255,255,.15)
+          padding:
+            top: -20
+            left: 4
+            right: 10
+            bottom: 0
+          xaxis:
+            lines:
+              show: true
+        xaxis:
+          tickAmount: 6
+          labels:
+            format: HH:mm
+            style:
+              fontSize: 11px
+        legend:
+          show: false
+        tooltip:
+          theme: dark
+      card_mod:
+        style: |
+          ha-card {
+            height: 150px; box-sizing: border-box;
+            position: relative; overflow: hidden; border: none;
+            --primary-text-color: #fff;
+            --secondary-text-color: rgba(255,255,255,.85);
+            background: linear-gradient(135deg, #232b36, #3a4656);
+          }
+          #header {
+            padding: 8px 14px 0 !important;
+            margin: 0 0 0px 0 !important;
+          }
+          #header__title {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+          }
+          #header__states {
+            margin: -2px 0 0 0 !important;
+            padding: 0 !important;
+          }
+          #header__states > div:first-child {
+            zoom: 1;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+          }
+          #header__states > div:last-child {
+            position: absolute !important;
+            top: 6px;
+            right: 14px;
+            margin: 0 !important;
+            padding: 0 !important;
+            text-align: right;
+            zoom: 1;
+            opacity: .9;
+          }

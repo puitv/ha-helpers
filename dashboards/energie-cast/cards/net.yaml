@@ -1,0 +1,216 @@
+type: vertical-stack
+grid_options:
+  rows: 3
+  columns: 8
+cards:
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sigen_plant_grid_active_power
+        above: 0.5
+    card:
+      type: custom:mini-graph-card
+      name: Net · Afname
+      icon: mdi:transmission-tower-import
+      entities:
+        - entity: sensor.sigen_plant_grid_active_power
+      hours_to_show: 24
+      points_per_hour: 4
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 180px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #6e1f24, #c0563a);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .state__uom { opacity: .8 !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sigen_plant_grid_active_power
+        below: -0.5
+    card:
+      type: custom:mini-graph-card
+      name: Net · Teruglevering
+      icon: mdi:transmission-tower-export
+      entities:
+        - entity: sensor.sigen_plant_grid_active_power
+      hours_to_show: 24
+      points_per_hour: 4
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 180px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #17563a, #2e9d62);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .state__uom { opacity: .8 !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sigen_plant_grid_active_power
+        above: -0.4999
+        below: 0.4999
+    card:
+      type: custom:mini-graph-card
+      name: Net · Neutraal
+      icon: mdi:transmission-tower
+      entities:
+        - entity: sensor.sigen_plant_grid_active_power
+      hours_to_show: 24
+      points_per_hour: 4
+      height: 150
+      line_width: 2
+      line_color: rgba(255,255,255,.85)
+      font_size: 85
+      font_size_header: 16
+      show:
+        labels: true
+        legend: false
+        fill: fade
+      card_mod:
+        style: >
+          ha-card {
+            height: 180px; box-sizing: border-box;
+            padding: 10px 0 0 !important;
+            position: relative; overflow: hidden; border: none;
+            background: linear-gradient(135deg, #232b36, #3a4656);
+          }
+
+          .header { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .header .name, .header .name > span { color:
+          rgba(255,255,255,.9) !important; opacity: 1 !important;
+          font-weight: 500; }
+
+          .states { padding: 0 12px !important; margin: 0
+          !important; }
+
+          .state__uom { opacity: .8 !important; }
+
+          .graph { margin-top: auto !important; }
+
+          .graph__container { background: none; }
+
+          .graph__container__svg {
+            background:
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) top / 100% 1px no-repeat,
+              linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) bottom / 100% 1px no-repeat,
+              repeating-linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgba(255,255,255,.12) calc(25% - 1px) 25%),
+              repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgba(255,255,255,.08) calc(25% - 1px) 25%);
+          }
+
+          .graph__labels > span {
+            background: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,.75) !important;
+          }
+
+          ha-card::before, ha-card::after { position: absolute;
+          bottom: 4px; font-size: 12px; line-height: 1; color:
+          rgba(255,255,255,.8); z-index: 1; pointer-events: none; }
+
+          ha-card::before { content: "-24u"; left: 44px; }
+
+          ha-card::after  { content: "nu"; right: 10px; }

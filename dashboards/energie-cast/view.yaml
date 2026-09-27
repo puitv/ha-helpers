@@ -1,0 +1,59 @@
+path: energie-cast
+max_columns: 2
+title: Energie Cast
+sections:
+  - type: grid
+    column_span: 2
+    cards:
+      - !include cards/thuisaccu.yaml
+      - !include cards/id4.yaml
+      - !include cards/net.yaml
+  - type: grid
+    column_span: 2
+    cards:
+      - !include cards/pv-opwek.yaml
+      - !include cards/eigen-verbruik-pv.yaml
+      - !include cards/energie-netto.yaml
+      - !include cards/evcc-laadmodus.yaml
+      - !include cards/energiestatus.yaml
+      - !include cards/prijs-nu.yaml
+      - !include cards/prijs-volgend-uur.yaml
+      - !include cards/prijs-laagste-vandaag.yaml
+      - !include cards/prijs-hoogste-vandaag.yaml
+      - !include cards/prijs-laagste-morgen.yaml
+      - !include cards/prijs-hoogste-morgen.yaml
+  - type: grid
+    cards:
+      - type: heading
+        heading_style: title
+      - type: energy-usage-graph
+    column_span: 1
+    background:
+      opacity: 50
+    visibility:
+      - condition: numeric_state
+        above: -0.5
+        below: 0.5
+        entity: sensor.huidige_verbruik
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+      - !include cards/stroomprijs-grafiek.yaml
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+      - type: energy-devices-graph
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+    column_span: 0.7
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+footer: {}
+cards: []
+dense_section_placement: true

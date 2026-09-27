@@ -1,0 +1,54 @@
+type: custom:button-card
+entity: sensor.next_hour_electricity_market_price
+name: Prijs volgende uur
+show_icon: false
+show_state: false
+custom_fields:
+  val: |
+    [[[ const v = parseFloat(entity.state);
+        return '€ ' + v.toLocaleString('nl-NL', {minimumFractionDigits: 3, maximumFractionDigits: 3})
+          + '<span style="font-size:12px;opacity:.7"> /kWh</span>'; ]]]
+  sub: |
+    [[[ const n = parseFloat(entity.state);
+        const c = parseFloat(states['sensor.zonneplan_current_electricity_tariff'].state);
+        if (n > c) return '▲ duurder dan nu';
+        if (n < c) return '▼ goedkoper dan nu';
+        return '= gelijk aan nu'; ]]]
+styles:
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 12px 14px
+    - border-radius: 12px
+    - border: none
+    - color: white
+    - background: |
+        [[[ const c = parseFloat(entity.state);
+            const lo = parseFloat(states['sensor.zonneplan_cheapest_quarter_hour_today'].state);
+            const hi = parseFloat(states['sensor.zonneplan_most_expensive_quarter_hour_today'].state);
+            const r = (c - lo) / ((hi - lo) || 1);
+            if (r < 0.33) return 'linear-gradient(135deg, rgb(23,86,58), rgb(46,157,98))';
+            if (r < 0.66) return 'linear-gradient(135deg, rgb(138,75,15), rgb(217,150,43))';
+            return 'linear-gradient(135deg, rgb(110,31,36), rgb(192,86,58))'; ]]]
+  grid:
+    - grid-template-areas: '"n" "val" "sub"'
+    - justify-items: start
+    - align-content: center
+    - row-gap: 2px
+  name:
+    - justify-self: start
+    - font-size: 13px
+    - font-weight: 500
+    - color: rgba(255,255,255,.85)
+  custom_fields:
+    val:
+      - justify-self: start
+      - font-size: 22px
+      - font-weight: 500
+    sub:
+      - justify-self: start
+      - font-size: 12px
+      - color: rgba(255,255,255,.85)
+grid_options:
+  columns: 4
+  rows: 1.5

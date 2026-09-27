@@ -1,0 +1,66 @@
+type: custom:button-card
+entity: sensor.zonneplan_afname_vandaag
+name: Energie netto
+show_icon: false
+show_state: false
+triggers_update:
+  - sensor.zonneplan_afname_vandaag
+  - sensor.zonneplan_teruglevering_vandaag
+  - sensor.zonneplan_afname_deze_maand
+  - sensor.zonneplan_teruglevering_deze_maand
+  - sensor.zonneplan_afname_dit_jaar
+  - sensor.zonneplan_teruglevering_dit_jaar
+custom_fields:
+  legend: >
+    [[[ return '<span style="color:rgb(111,220,154)">▲
+    opbrengst</span>'
+             + '<span style="opacity:.5"> · </span>'
+             + '<span style="color:rgb(255,138,115)">▼ kosten</span>'; ]]]
+  list: >
+    [[[ const rows = [['Vandaag', 'vandaag'], ['Deze maand',
+    'deze_maand'], ['Dit jaar', 'dit_jaar']];
+        return rows.map(function (r) {
+          const sa = states['sensor.zonneplan_afname_' + r[1]];
+          const st = states['sensor.zonneplan_teruglevering_' + r[1]];
+          const a = sa ? parseFloat(sa.state) || 0 : 0;
+          const t = st ? parseFloat(st.state) || 0 : 0;
+          const net = a - t;
+          const col = net <= 0 ? 'rgb(111,220,154)' : 'rgb(255,138,115)';
+          const arrow = net <= 0 ? '▲' : '▼';
+          const amount = Math.abs(net).toLocaleString('nl-NL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          return '<div style="display:flex;justify-content:space-between;align-items:baseline;'
+               + 'width:100%;padding:6px 0;border-top:1px solid rgba(255,255,255,.08)">'
+               + '<span style="font-size:13px;opacity:.85">' + r[0] + '</span>'
+               + '<span style="font-size:17px;font-weight:500;color:' + col + '">'
+               + arrow + ' € ' + amount + '</span></div>';
+        }).join(''); ]]]
+styles:
+  card:
+    - height: 100%
+    - box-sizing: border-box
+    - padding: 12px 14px
+    - border-radius: 12px
+    - border: none
+    - color: white
+    - background: linear-gradient(135deg, rgb(35,43,54), rgb(58,70,86))
+  grid:
+    - grid-template-areas: '"n legend" "list list"'
+    - grid-template-columns: 1fr auto
+    - align-content: center
+  name:
+    - font-size: 14px
+    - font-weight: 500
+    - color: rgba(255,255,255,.9)
+    - justify-self: start
+    - padding-bottom: 6px
+  custom_fields:
+    legend:
+      - font-size: 11px
+      - justify-self: end
+      - padding-bottom: 6px
+    list:
+      - width: 100%
+      - justify-self: stretch
+grid_options:
+  columns: 8
+  rows: 2.5

@@ -1,0 +1,122 @@
+blueprint:
+  name: "EVCC: Block PV charging while Sigen battery is selling"
+  description: >
+    Switches the evcc charge mode to **off** while the home battery is selling to the
+    grid (e.g. `sensor.sigen_energiestatus` = "Batterij verkoop"), and back to **pv**
+    when that ends. Prevents the car from charging on battery power that is being sold.
+
+
+    Only switches from *pv* to *off* and back: a manually chosen mode such as *now* or
+    *minpv* is left alone. A mode of *off* that is still active when selling ends is
+    switched back to *pv*.
+
+
+    Designed for `packages/sigen_energiestatus.yaml` from
+    https://github.com/puitv/ha-helpers, but works with any sensor that has a
+    distinct "selling" state.
+  domain: automation
+  author: puitv
+  source_url: https://github.com/puitv/ha-helpers/blob/main/blueprints/automation/puitv/evcc_block_pv_charging_while_battery_selling.yaml
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    status_sensor:
+      name: Energy status sensor
+      default: sensor.sigen_energiestatus
+      selector:
+        entity:
+          domain: sensor
+    selling_state:
+      name: Selling state
+      description: State of the status sensor that means "battery is selling".
+      default: Batterij verkoop
+      selector:
+        text:
+    evcc_mode:
+      name: evcc charge mode
+      description: The evcc loadpoint mode select entity.
+      selector:
+        entity:
+          domain: select
+    delay:
+      name: Delay
+      description: How long the status must be stable before switching.
+      default:
+        minutes: 1
+      selector:
+        duration:
+    on_blocked:
+      name: Actions when blocked
+      description: Optional, e.g. a notification. Variable `status` holds the current status.
+      default: []
+      selector:
+        action:
+    on_released:
+      name: Actions when released
+      description: Optional, e.g. a notification. Variable `status` holds the current status.
+      default: []
+      selector:
+        action:
+
+mode: queued
+
+variables:
+  status_sensor: !input status_sensor
+  selling_state: !input selling_state
+  status: "{{ states(status_sensor) }}"
+  block: "{{ status == selling_state }}"
+
+triggers:
+  - trigger: state
+    entity_id: !input status_sensor
+    to: !input selling_state
+    for: !input delay
+  - trigger: state
+    entity_id: !input status_sensor
+    not_to:
+      - !input selling_state
+      - unavailable
+      - unknown
+    for: !input delay
+  - trigger: state
+    entity_id: !input evcc_mode
+    to: pv
+  - trigger: homeassistant
+    event: start
+
+conditions:
+  - condition: template
+    value_template: "{{ status not in ['unavailable', 'unknown'] }}"
+
+actions:
+  - choose:
+      - alias: Battery selling -> evcc off
+        conditions:
+          - condition: template
+            value_template: "{{ block }}"
+          - condition: state
+            entity_id: !input evcc_mode
+            state: pv
+        sequence:
+          - action: select.select_option
+            target:
+              entity_id: !input evcc_mode
+            data:
+              option: "off"
+          - choose: []
+            default: !input on_blocked
+      - alias: Selling over -> evcc back to pv
+        conditions:
+          - condition: template
+            value_template: "{{ not block }}"
+          - condition: state
+            entity_id: !input evcc_mode
+            state: "off"
+        sequence:
+          - action: select.select_option
+            target:
+              entity_id: !input evcc_mode
+            data:
+              option: pv
+          - choose: []
+            default: !input on_released
