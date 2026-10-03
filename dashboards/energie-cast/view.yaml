@@ -24,6 +24,18 @@ sections:
       - !include cards/prijs-hoogste-morgen.yaml
   - type: grid
     cards:
+      - type: energy-sankey
+        layout: auto
+        group_by_floor: true
+        group_by_area: true
+  - type: grid
+    cards:
+      - type: energy-devices-graph
+  - type: grid
+    cards:
+      - !include cards/stroomprijs-grafiek.yaml
+  - type: grid
+    cards:
       - type: heading
         heading_style: title
       - type: energy-usage-graph
@@ -37,23 +49,13 @@ sections:
         entity: sensor.huidige_verbruik
   - type: grid
     cards:
-      - type: heading
-        heading: New section
-      - !include cards/stroomprijs-grafiek.yaml
-  - type: grid
-    cards:
-      - type: heading
-        heading: New section
-      - type: energy-devices-graph
-  - type: grid
-    cards:
-      - type: heading
-        heading: New section
-    column_span: 0.7
-  - type: grid
-    cards:
-      - type: heading
-        heading: New section
+      - type: power-sources-graph
+        grid_options:
+          rows: auto
+          columns: 24
+        expand_legend: true
+        show_legend: true
+    column_span: 2
 footer: {}
 cards: []
 dense_section_placement: true

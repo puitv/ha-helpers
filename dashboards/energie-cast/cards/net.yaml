@@ -1,6 +1,6 @@
 type: vertical-stack
 grid_options:
-  rows: 3
+  rows: auto
   columns: 8
 cards:
   - type: conditional
