@@ -1,0 +1,153 @@
+# Live vermogen (kW): Zon/Net/Accu → Huis → devices. Vereist HACS: ha-sankey-chart (MindFreeze).
+# Devices = vermogenssensoren uit Instellingen → Energie. Accu: sigen_plant_battery_power is
+# negatief bij ontladen, dus 'Accu' (bron) krijgt multiply -1 en 'Accu laden' de positieve kant.
+type: custom:sankey-chart
+title: Vermogen · nu
+show_names: true
+unit_prefix: k
+round: 2
+height: 400
+min_state: 0.005
+sort_by: state
+grid_options:
+  columns: full
+nodes:
+  - id: zon
+    entity_id: sensor.sigen_plant_pv_power
+    name: Zon
+    section: 0
+    color: var(--energy-solar-color)
+  - id: net
+    entity_id: sensor.sigen_plant_grid_import_power
+    name: Net
+    section: 0
+    color: var(--energy-grid-consumption-color)
+  - id: accu_ontladen
+    entity_id: sensor.sigen_plant_battery_power
+    name: Accu
+    section: 0
+    color: var(--energy-battery-out-color)
+    filters:
+      - multiply: -1
+  - id: huis
+    type: remaining_parent_state
+    name: Huis
+    section: 1
+    children_sum:
+      should_be: equal_or_less
+      reconcile_to: max
+  - id: accu_laden
+    entity_id: sensor.sigen_plant_battery_power
+    name: Accu laden
+    section: 1
+    color: var(--energy-battery-out-color)
+  - id: teruglevering
+    entity_id: sensor.sigen_plant_grid_export_power
+    name: Teruglevering
+    section: 1
+    color: var(--energy-grid-consumption-color)
+  - id: laadpaal_smart_meter_power_total
+    entity_id: sensor.laadpaal_smart_meter_power_total
+    name: Laadpaal
+    section: 2
+  - id: sp1_droger_wattage
+    entity_id: sensor.sp1_droger_wattage
+    name: Droger
+    section: 2
+  - id: sp1_wasmachine_links_wattage
+    entity_id: sensor.sp1_wasmachine_links_wattage
+    name: Wasmachine links
+    section: 2
+  - id: sp1_wasmachine_rechts_wattage
+    entity_id: sensor.sp1_wasmachine_rechts_wattage
+    name: Wasmachine rechts
+    section: 2
+  - id: sp1_meterkast_wattage
+    entity_id: sensor.sp1_meterkast_wattage
+    name: Meterkast
+    section: 2
+  - id: sigenstor_systeemverlies_en_verbruik_power
+    entity_id: sensor.sigenstor_systeemverlies_en_verbruik_power
+    name: Accu standby
+    section: 2
+  - id: sp1_leds_sarah_wattage
+    entity_id: sensor.sp1_leds_sarah_wattage
+    name: Vriezer
+    section: 2
+  - id: athom_smart_plug_v2_power_2
+    entity_id: sensor.athom_smart_plug_v2_power_2
+    name: Koelkast
+    section: 2
+  - id: athom_smart_plug_v2_power_4
+    entity_id: sensor.athom_smart_plug_v2_power_4
+    name: Buro Kantoor
+    section: 2
+  - id: athom_smart_plug_v2_power_3
+    entity_id: sensor.athom_smart_plug_v2_power_3
+    name: Buro Keuken
+    section: 2
+  - id: athom_smart_plug_v2_d78248_power
+    entity_id: sensor.athom_smart_plug_v2_d78248_power
+    name: Kantoor Netwerk
+    section: 2
+  - id: lampen_power
+    entity_id: sensor.lampen_power
+    name: Slimme lampen
+    section: 2
+  - id: audio_tv_power
+    entity_id: sensor.audio_tv_power
+    name: Audio/TV
+    section: 2
+  - id: network_power
+    entity_id: sensor.network_power
+    name: Access Points
+    section: 2
+  - id: overig
+    type: remaining_parent_state
+    name: Overig
+    section: 2
+links:
+  - source: zon
+    target: huis
+  - source: zon
+    target: accu_laden
+  - source: zon
+    target: teruglevering
+  - source: net
+    target: huis
+  - source: net
+    target: accu_laden
+  - source: accu_ontladen
+    target: huis
+  - source: accu_ontladen
+    target: teruglevering
+  - source: huis
+    target: laadpaal_smart_meter_power_total
+  - source: huis
+    target: sp1_droger_wattage
+  - source: huis
+    target: sp1_wasmachine_links_wattage
+  - source: huis
+    target: sp1_wasmachine_rechts_wattage
+  - source: huis
+    target: sp1_meterkast_wattage
+  - source: huis
+    target: sigenstor_systeemverlies_en_verbruik_power
+  - source: huis
+    target: sp1_leds_sarah_wattage
+  - source: huis
+    target: athom_smart_plug_v2_power_2
+  - source: huis
+    target: athom_smart_plug_v2_power_4
+  - source: huis
+    target: athom_smart_plug_v2_power_3
+  - source: huis
+    target: athom_smart_plug_v2_d78248_power
+  - source: huis
+    target: lampen_power
+  - source: huis
+    target: audio_tv_power
+  - source: huis
+    target: network_power
+  - source: huis
+    target: overig

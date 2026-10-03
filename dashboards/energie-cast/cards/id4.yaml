@@ -20,6 +20,9 @@ cards:
         - entity: sensor.id_4_estimated_remaining_driving_range
           show_graph: false
           show_state: true
+        - entity: sensor.evcc_laadpaal_charge_power
+          show_graph: false
+          show_state: true
       hours_to_show: 24
       points_per_hour: 2
       lower_bound: 0
@@ -75,6 +78,14 @@ cards:
           .states--secondary > .state:nth-child(2) { order: 2;
           margin-left: auto !important; }
 
+          .states--secondary > .state:nth-child(3) { position: absolute
+          !important; top: 12px; right: 12px; }
+
+          .states--secondary > .state:nth-child(3) .state__value {
+          font-size: 22px !important; }
+
+          .header .icon { display: none !important; }
+
           .graph { margin-top: auto !important; }
 
           .graph__container { background: none; }
@@ -120,6 +131,9 @@ cards:
           show_graph: false
           show_state: true
         - entity: sensor.id_4_estimated_remaining_driving_range
+          show_graph: false
+          show_state: true
+        - entity: sensor.evcc_laadpaal_charge_power
           show_graph: false
           show_state: true
       hours_to_show: 24
@@ -176,6 +190,14 @@ cards:
 
           .states--secondary > .state:nth-child(2) { order: 2;
           margin-left: auto !important; }
+
+          .states--secondary > .state:nth-child(3) { position: absolute
+          !important; top: 12px; right: 12px; }
+
+          .states--secondary > .state:nth-child(3) .state__value {
+          font-size: 22px !important; }
+
+          .header .icon { display: none !important; }
 
           .graph { margin-top: auto !important; }
 

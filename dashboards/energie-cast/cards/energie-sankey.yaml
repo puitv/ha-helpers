@@ -1,0 +1,171 @@
+# Energie vandaag (kWh): Zon/Net/Accu → Huis → devices. Vereist HACS: ha-sankey-chart (MindFreeze).
+# Devices = energiesensoren uit Instellingen → Energie. Vaste periode (vandaag), los van de datumkiezer.
+type: custom:sankey-chart
+title: Energie · vandaag
+energy_date_selection: false
+time_period_from: now/d
+time_period_to: now
+show_names: true
+unit_prefix: k
+round: 1
+height: 400
+min_state: 0.05
+sort_by: state
+grid_options:
+  columns: full
+nodes:
+  - id: zon
+    entity_id: sensor.sigen_plant_pv_daily_generation
+    name: Zon
+    section: 0
+    color: var(--energy-solar-color)
+  - id: net
+    entity_id: sensor.sigen_plant_daily_grid_import_energy
+    name: Net
+    section: 0
+    color: var(--energy-grid-consumption-color)
+  - id: accu_ontladen
+    entity_id: sensor.sigen_inverter_daily_discharge_energy
+    name: Accu
+    section: 0
+    color: var(--energy-battery-out-color)
+  - id: huis
+    type: remaining_parent_state
+    name: Huis
+    section: 1
+    children_sum:
+      should_be: equal_or_less
+      reconcile_to: max
+  - id: accu_laden
+    entity_id: sensor.sigen_inverter_daily_charge_energy
+    name: Accu laden
+    section: 1
+    color: var(--energy-battery-out-color)
+  - id: teruglevering
+    entity_id: sensor.sigen_plant_daily_grid_export_energy
+    name: Teruglevering
+    section: 1
+    color: var(--energy-grid-consumption-color)
+  - id: laadpaal_meter_reading_socket_1
+    entity_id: sensor.laadpaal_meter_reading_socket_1
+    name: Laadpaal
+    section: 2
+  - id: sp1_droger_total_daily_energy
+    entity_id: sensor.sp1_droger_total_daily_energy
+    name: Droger
+    section: 2
+  - id: sp1_wasmachine_links_total_daily_energy
+    entity_id: sensor.sp1_wasmachine_links_total_daily_energy
+    name: Wasmachine links
+    section: 2
+  - id: sp1_wasmachine_rechts_total_daily_energy
+    entity_id: sensor.sp1_wasmachine_rechts_total_daily_energy
+    name: Wasmachine rechts
+    section: 2
+  - id: sp1_meterkast_total_daily_energy
+    entity_id: sensor.sp1_meterkast_total_daily_energy
+    name: Meterkast
+    section: 2
+  - id: sigenstor_systeemverlies_en_verbruik_energy
+    entity_id: sensor.sigenstor_systeemverlies_en_verbruik_energy
+    name: Accu standby
+    section: 2
+  - id: sp1_leds_sarah_total_daily_energy
+    entity_id: sensor.sp1_leds_sarah_total_daily_energy
+    name: Vriezer
+    section: 2
+  - id: athom_smart_plug_v2_a7f3ec_total_energy
+    entity_id: sensor.athom_smart_plug_v2_a7f3ec_total_energy
+    name: Koelkast
+    section: 2
+  - id: athom_smart_plug_v2_a787c0_total_energy
+    entity_id: sensor.athom_smart_plug_v2_a787c0_total_energy
+    name: Buro Kantoor
+    section: 2
+  - id: athom_sp_v2_a7d1e6_buro_total_energy
+    entity_id: sensor.athom_sp_v2_a7d1e6_buro_total_energy
+    name: Buro Keuken
+    section: 2
+  - id: athom_smart_plug_v2_d78248_total_energy
+    entity_id: sensor.athom_smart_plug_v2_d78248_total_energy
+    name: Kantoor Netwerk
+    section: 2
+  - id: lampen_energy
+    entity_id: sensor.lampen_energy
+    name: Slimme lampen
+    section: 2
+  - id: audio_tv_energy
+    entity_id: sensor.audio_tv_energy
+    name: Audio/TV
+    section: 2
+  - id: network_energy
+    entity_id: sensor.network_energy
+    name: Access Points
+    section: 2
+  - id: airco_kantoor_energy_usage_cycle_2
+    entity_id: sensor.airco_kantoor_energy_usage_cycle_2
+    name: Airco Kantoor
+    section: 2
+  - id: aircowoonkamer_energy_usage_cycle
+    entity_id: sensor.aircowoonkamer_energy_usage_cycle
+    name: Airco Woonkamer
+    section: 2
+  - id: airco_kantoor_energy_usage_cycle
+    entity_id: sensor.airco_kantoor_energy_usage_cycle
+    name: Airco Zolder
+    section: 2
+  - id: overig
+    type: remaining_parent_state
+    name: Overig
+    section: 2
+links:
+  - source: zon
+    target: huis
+  - source: zon
+    target: accu_laden
+  - source: zon
+    target: teruglevering
+  - source: net
+    target: huis
+  - source: net
+    target: accu_laden
+  - source: accu_ontladen
+    target: huis
+  - source: accu_ontladen
+    target: teruglevering
+  - source: huis
+    target: laadpaal_meter_reading_socket_1
+  - source: huis
+    target: sp1_droger_total_daily_energy
+  - source: huis
+    target: sp1_wasmachine_links_total_daily_energy
+  - source: huis
+    target: sp1_wasmachine_rechts_total_daily_energy
+  - source: huis
+    target: sp1_meterkast_total_daily_energy
+  - source: huis
+    target: sigenstor_systeemverlies_en_verbruik_energy
+  - source: huis
+    target: sp1_leds_sarah_total_daily_energy
+  - source: huis
+    target: athom_smart_plug_v2_a7f3ec_total_energy
+  - source: huis
+    target: athom_smart_plug_v2_a787c0_total_energy
+  - source: huis
+    target: athom_sp_v2_a7d1e6_buro_total_energy
+  - source: huis
+    target: athom_smart_plug_v2_d78248_total_energy
+  - source: huis
+    target: lampen_energy
+  - source: huis
+    target: audio_tv_energy
+  - source: huis
+    target: network_energy
+  - source: huis
+    target: airco_kantoor_energy_usage_cycle_2
+  - source: huis
+    target: aircowoonkamer_energy_usage_cycle
+  - source: huis
+    target: airco_kantoor_energy_usage_cycle
+  - source: huis
+    target: overig

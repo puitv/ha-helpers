@@ -23,14 +23,10 @@ sections:
       - !include cards/prijs-laagste-morgen.yaml
       - !include cards/prijs-hoogste-morgen.yaml
   - type: grid
+    column_span: 2
     cards:
-      - type: energy-sankey
-        layout: auto
-        group_by_floor: true
-        group_by_area: true
-  - type: grid
-    cards:
-      - type: energy-devices-graph
+      - !include cards/energie-sankey.yaml
+      - !include cards/vermogen-sankey.yaml
   - type: grid
     cards:
       - !include cards/stroomprijs-grafiek.yaml

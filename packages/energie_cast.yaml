@@ -1,0 +1,15 @@
+# Energie Cast dashboard helpers
+#
+# Hulp-entiteiten voor het Energie Cast dashboard (dashboards/energie-cast/).
+# Installatie: zet dit bestand in /config/packages/ en zorg dat configuration.yaml bevat:
+#   homeassistant:
+#     packages: !include_dir_named packages
+
+template:
+  # Altijd 0: mini-graph-card heeft geen referentielijn, dus de Net-card tekent
+  # deze sensor als tweede lijn om de 0 kW-lijn zichtbaar te maken.
+  - sensor:
+    - name: "Energie Cast nullijn"
+      unique_id: energie_cast_nullijn
+      unit_of_measurement: kW
+      state: "0"

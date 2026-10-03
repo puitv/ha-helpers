@@ -79,7 +79,8 @@ dashboards/energie-cast/
 **Vereiste HACS frontend-cards:** [button-card](https://github.com/custom-cards/button-card),
 [mini-graph-card](https://github.com/kalkih/mini-graph-card),
 [apexcharts-card](https://github.com/RomRider/apexcharts-card),
-[card-mod](https://github.com/thomasloven/lovelace-card-mod).
+[card-mod](https://github.com/thomasloven/lovelace-card-mod),
+[sankey-chart](https://github.com/MindFreeze/ha-sankey-chart).
 
 **Entiteiten:** de cards gebruiken de entity-id's van mijn installatie. Pas ze aan naar die
 van jou:
@@ -87,6 +88,8 @@ van jou:
 - Zonneplan: `sensor.zonneplan_*`
 - evcc: `select.evcc_laadpaal_mode`, `binary_sensor.evcc_laadpaal_*`, `sensor.evcc_forecast_solar`
 - Auto (VW ID.4): `sensor.id_4_*`
+- Forecast.Solar (PV-card, prognose en verwachting vóór nu): `sensor.power_production_now*`, `sensor.energy_production_today*`
+- Nullijn in de Net-card: `sensor.energie_cast_nullijn` uit [`packages/energie_cast.yaml`](packages/energie_cast.yaml)
 
 **Gebruiken:**
 - **Eén card:** open het bestand in `cards/`, kopieer de inhoud en plak die in de UI via

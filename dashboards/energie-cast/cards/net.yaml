@@ -14,6 +14,12 @@ cards:
       icon: mdi:transmission-tower-import
       entities:
         - entity: sensor.sigen_plant_grid_active_power
+        - entity: sensor.energie_cast_nullijn
+          color: rgba(255,255,255,.6)
+          show_state: false
+          show_fill: false
+          show_points: false
+          smoothing: false
       hours_to_show: 24
       points_per_hour: 4
       height: 150
@@ -84,6 +90,12 @@ cards:
       icon: mdi:transmission-tower-export
       entities:
         - entity: sensor.sigen_plant_grid_active_power
+        - entity: sensor.energie_cast_nullijn
+          color: rgba(255,255,255,.6)
+          show_state: false
+          show_fill: false
+          show_points: false
+          smoothing: false
       hours_to_show: 24
       points_per_hour: 4
       height: 150
@@ -155,6 +167,12 @@ cards:
       icon: mdi:transmission-tower
       entities:
         - entity: sensor.sigen_plant_grid_active_power
+        - entity: sensor.energie_cast_nullijn
+          color: rgba(255,255,255,.6)
+          show_state: false
+          show_fill: false
+          show_points: false
+          smoothing: false
       hours_to_show: 24
       points_per_hour: 4
       height: 150
